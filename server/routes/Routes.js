@@ -6,7 +6,7 @@ const { createRepo } = require("../controllers/createRepo.js");
 
 // Check for authentication status
 router.get("/", (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? "Logged in" : "Logged out");
+  res.send("Welcome");
 });
 
 // User-related routes
