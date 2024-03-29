@@ -2,12 +2,18 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController.js");
 const issueController = require("../controllers/issueController.js");
+const login = require("../controllers/Login.js");
 const { createRepo } = require("../controllers/createRepo.js");
 
 // Check for authentication status
 router.get("/", (req, res) => {
   res.send("Welcome");
 });
+
+// Auth routes
+
+router.post("/login", login.login);
+router.post("/signup", login.signup);
 
 // User-related routes
 router.get("/userinfo", userController.getAllUsers);
