@@ -18,8 +18,8 @@ const config = {
   issuerBaseURL: "https://dev-z8tivme55voqva1b.us.auth0.com",
 };
 
-app.use(auth(config));
-app.use(authMiddleware.requiresAuth);
+// app.use(auth(config));
+// app.use(authMiddleware.requiresAuth);
 app.use("/", routes);
 
 app.listen(port, () => {
