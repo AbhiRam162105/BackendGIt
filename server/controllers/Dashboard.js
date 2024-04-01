@@ -4,18 +4,18 @@ const Issue = require("../models/issues");
 
 async function fetchUserDetailsAndRelatedData(userId) {
   try {
-    // Fetch user details
+    
     const user = await User.findById(userId)
       .populate("repositories")
       .populate("followedUsers")
       .populate("starRepos");
 
-    // Fetch repositories owned by the user
+    
     const repositories = await Repository.find({ owner: userId }).populate(
       "issues"
     );
 
-    // Fetch issues related to the user's repositories
+   
     const issues = await Issue.find({
       repository: { $in: repositories.map((repo) => repo._id) },
     });
