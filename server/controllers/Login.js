@@ -2,6 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { MongoClient } = require("mongodb"); // Import MongoClient
+const { fetchUserDetailsAndRelatedData } = require("./Dashboard");
 
 const uri = process.env.MONGO_URI; // Your MongoDB connection string
 const client = new MongoClient(uri);
@@ -49,10 +50,7 @@ async function signup(req, res) {
 
 async function login(req, res) {
   const { username, password } = req.body;
-  console.log("====================================");
-  console.log(username);
-  console.log(password);
-  console.log("====================================");
+
   try {
     await client.connect();
 
@@ -62,9 +60,7 @@ async function login(req, res) {
 
     // Find the user by username
     const user = await usersCollection.findOne({ username });
-    console.log("====================================");
-    console.log(user);
-    console.log("====================================");
+
     if (!user) {
       return res.status(400).json({ message: "Invalid username or password." });
     }
@@ -79,7 +75,9 @@ async function login(req, res) {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    res.json({ token });
+
+    // Send back only the token and user ID
+    res.json({ token, userId: user._id });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
