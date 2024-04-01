@@ -14,8 +14,8 @@ async function signup(req, res) {
     // Connect to the MongoDB client
     await client.connect();
 
-    const db = client.db("GitUsers");
-    const usersCollection = db.collection("userInfo");
+    const db = client.db("test");
+    const usersCollection = db.collection("user");
 
     // Check if the user already exists
     let user = await usersCollection.findOne({ username });
