@@ -8,7 +8,7 @@ const uri = process.env.MONGO_URI; // Your MongoDB connection string
 const client = new MongoClient(uri);
 
 async function signup(req, res) {
-  const { username, password } = req.body; // Extract username, password, and email from req.body
+  const { username, password, email } = req.body; // Extract username, password, and email from req.body
 
   try {
     // Connect to the MongoDB client
@@ -30,6 +30,7 @@ async function signup(req, res) {
     const newUser = {
       username,
       password: hashedPassword,
+      email, // Include email in the new user document
     };
 
     // Save the new user to the database
@@ -54,13 +55,12 @@ async function login(req, res) {
   try {
     await client.connect();
 
-    // Select the database and collection
     const db = client.db("test");
     const usersCollection = db.collection("users");
     console.log("====================================");
     console.log(username);
     console.log("====================================");
-    // Find the user by username
+
     const user = await usersCollection.findOne({ username });
 
     if (!user) {
@@ -73,12 +73,10 @@ async function login(req, res) {
       return res.status(400).json({ message: "Invalid username or password." });
     }
 
-    // Generate a JWT token for the user
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // Send back only the token and user ID
     res.json({ token, userId: user._id });
   } catch (err) {
     console.error(err.message);
