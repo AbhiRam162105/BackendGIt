@@ -15,7 +15,7 @@ async function signup(req, res) {
     await client.connect();
 
     const db = client.db("test");
-    const usersCollection = db.collection("user");
+    const usersCollection = db.collection("users");
 
     // Check if the user already exists
     let user = await usersCollection.findOne({ username });
@@ -56,9 +56,11 @@ async function login(req, res) {
     await client.connect();
 
     // Select the database and collection
-    const db = client.db("GitUsers");
-    const usersCollection = db.collection("userInfo");
-
+    const db = client.db("test");
+    const usersCollection = db.collection("users");
+    console.log("====================================");
+    console.log(username);
+    console.log("====================================");
     // Find the user by username
     const user = await usersCollection.findOne({ username });
 
