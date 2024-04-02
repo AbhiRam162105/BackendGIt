@@ -8,7 +8,7 @@ const uri = process.env.MONGO_URI; // Your MongoDB connection string
 const client = new MongoClient(uri);
 
 async function signup(req, res) {
-  const { username, password, email } = req.body; // Extract username, password, and email from req.body
+  const { username, password } = req.body; // Extract username, password, and email from req.body
 
   try {
     // Connect to the MongoDB client
@@ -30,7 +30,6 @@ async function signup(req, res) {
     const newUser = {
       username,
       password: hashedPassword,
-      email, // Include email in the new user document
     };
 
     // Save the new user to the database
