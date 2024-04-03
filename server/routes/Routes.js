@@ -23,6 +23,7 @@ router.get("/", (req, res) => {
 // Auth routes
 router.post("/login", login.login);
 router.post("/signup", login.signup);
+router.post("/oauth/google", login.signup);
 
 // User-related routes
 router.get("/userinfo", userController.getAllUsers);
