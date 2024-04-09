@@ -8,7 +8,7 @@ const uri = process.env.MONGO_URI; // Your MongoDB connection string
 const client = new MongoClient(uri);
 
 async function signup(req, res) {
-  const { username, password, email } = req.body; // Extract username, password, and email from req.body
+  const { username, password, email, googleId } = req.body; // Extract additional fields
 
   try {
     // Connect to the MongoDB client
@@ -26,11 +26,15 @@ async function signup(req, res) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create a new user document
+    // Create a new user document with all fields
     const newUser = {
       username,
       password: hashedPassword,
       email, // Include email in the new user document
+      googleId, // Include googleId in the new user document
+      repositories: [], // Initialize repositories array
+      followedUsers: [], // Initialize followedUsers array
+      starRepos: [], // Initialize starRepos array
     };
 
     // Save the new user to the database

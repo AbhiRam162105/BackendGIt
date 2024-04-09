@@ -52,8 +52,12 @@ async function googleSignup(req, res) {
     if (!user) {
       const newUser = {
         username,
+        password: "",
         email,
         googleId,
+        repositories: [],
+        followedUsers: [],
+        starRepos: [],
       };
 
       const result = await usersCollection.insertOne(newUser);
@@ -68,6 +72,7 @@ async function googleSignup(req, res) {
     // Respond with the token and user ID
     res.json({ token, userId: user._id });
   } catch (err) {
+  
     console.error(err.message);
     res.status(500).send("Server error");
   } finally {

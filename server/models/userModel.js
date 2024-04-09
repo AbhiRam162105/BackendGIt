@@ -21,12 +21,14 @@ const UserSchema = new Schema({
   },
   repositories: [
     {
+      default: [],
       type: Schema.Types.ObjectId,
       ref: "Repository",
     },
   ],
   followedUsers: [
     {
+      default: [],
       type: Schema.Types.ObjectId,
       ref: "User",
     },
