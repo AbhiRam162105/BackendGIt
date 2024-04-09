@@ -14,6 +14,7 @@ const {
   fetchRepositoriesOfFollowedUsers,
   fetchRepositoriesOfLoggedInUser,
 } = require("../controllers/Dashboard.js");
+const { googleLogin, googleSignup } = require("../controllers/googleLogin.js");
 
 // Check for authentication status
 router.get("/", (req, res) => {
@@ -23,7 +24,8 @@ router.get("/", (req, res) => {
 // Auth routes
 router.post("/login", login.login);
 router.post("/signup", login.signup);
-router.post("/oauth/google", login.signup);
+router.post("/oauth/google", googleLogin);
+router.post("/oauth/google/signup", googleSignup);
 
 // User-related routes
 router.get("/userinfo", userController.getAllUsers);

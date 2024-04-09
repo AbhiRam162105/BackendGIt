@@ -27,7 +27,7 @@ const config = {
   issuerBaseURL: "https://dev-z8tivme55voqva1b.us.auth0.com",
 };
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "*" }));
 
 app.use("/", routes);
 

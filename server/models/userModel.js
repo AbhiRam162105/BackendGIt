@@ -14,7 +14,10 @@ const UserSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+  },
+  googleId: {
+    type: String,
+    sparse: true, // This allows multiple null values but only one non-null value
   },
   repositories: [
     {
@@ -30,6 +33,7 @@ const UserSchema = new Schema({
   ],
   starRepos: [
     {
+      default: [],
       type: Schema.Types.ObjectId,
       ref: "Repository",
     },
