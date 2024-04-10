@@ -45,10 +45,8 @@ async function googleSignup(req, res) {
     const db = client.db("test");
     const usersCollection = db.collection("users");
 
-    // Check if a user with the given googleId already exists
     let user = await usersCollection.findOne({ googleId });
 
-    // If the user does not exist, create a new user
     if (!user) {
       const newUser = {
         username,
@@ -61,7 +59,8 @@ async function googleSignup(req, res) {
       };
 
       const result = await usersCollection.insertOne(newUser);
-      user = result.ops[0];
+
+      user = result;
     }
 
     // Generate a JWT token for the user
@@ -72,8 +71,7 @@ async function googleSignup(req, res) {
     // Respond with the token and user ID
     res.json({ token, userId: user._id });
   } catch (err) {
-  
-    console.error(err.message);
+    console.error(err);
     res.status(500).send("Server error");
   } finally {
     await client.close();
