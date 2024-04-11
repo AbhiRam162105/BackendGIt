@@ -6,26 +6,16 @@ const RepositorySchema = new Schema({
     type: String,
     required: true,
   },
-  type: {
+  description: {
     type: String,
-    enum: ["file", "folder"],
-    required: true,
   },
-  parent: {
-    type: Schema.Types.ObjectId,
-    ref: "Repository",
-  },
-  children: [
+  content: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "Repository",
+      type: String,
     },
   ],
-  content: {
-    type: String,
-    required: function () {
-      return this.type === "file";
-    },
+  visibility: {
+    type: Boolean,
   },
   owner: {
     type: Schema.Types.ObjectId,

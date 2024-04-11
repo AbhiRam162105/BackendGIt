@@ -7,30 +7,19 @@ async function createRepo(req, res) {
       userId,
       repositoryName,
       description = "",
-      publicOrPrivate = "public",
-      type,
-      content = "",
-      parent = null,
+      visibility = true, // Default to true for public repositories
+      content = [],
       issues = [],
     } = req.body;
 
     // Check for required fields
-    if (!repositoryName || !type) {
-      return res
-        .status(400)
-        .json({ error: "Repository name and type are required." });
+    if (!repositoryName) {
+      return res.status(400).json({ error: "Repository name is required." });
     }
 
-    // If the repository is a file, ensure content is provided
-    if (type === "file" && !content) {
-      return res
-        .status(400)
-        .json({ error: "Content is required for file repositories." });
-    }
-
-    // Ensure parent, if provided, is a valid ObjectId
-    if (parent && !mongoose.Types.ObjectId.isValid(parent)) {
-      return res.status(400).json({ error: "Invalid parent ID." });
+    // Ensure owner is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid owner ID." });
     }
 
     // Ensure issues, if provided, are valid ObjectIds
@@ -41,11 +30,9 @@ async function createRepo(req, res) {
     const newRepository = new Repository({
       name: repositoryName,
       description,
-      publicOrPrivate,
+      visibility,
       owner: userId,
-      type,
       content,
-      parent,
       issues,
     });
 
@@ -63,7 +50,9 @@ async function createRepo(req, res) {
 
 async function getAllRepositories(req, res) {
   try {
-    const repositories = await Repository.find({});
+    const repositories = await Repository.find({})
+      .populate("owner")
+      .populate("issues");
     res.json(repositories);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch repositories" });
@@ -86,10 +75,10 @@ async function getRepositoryById(req, res) {
 
 async function updateRepositoryById(req, res) {
   try {
-    const { name, type, parent, content, owner } = req.body;
+    const { name, description, visibility, content, owner } = req.body;
     const repository = await Repository.findByIdAndUpdate(
       req.params.id,
-      { name, type, parent, content, owner },
+      { name, description, visibility, content, owner },
       { new: true }
     );
     if (!repository) {
@@ -112,6 +101,7 @@ async function deleteRepositoryById(req, res) {
     res.status(500).json({ error: "Failed to delete repository" });
   }
 }
+
 module.exports = {
   createRepo,
   getAllRepositories,
