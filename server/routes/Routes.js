@@ -41,7 +41,7 @@ router.delete("/users/:id", userController.deleteUserById);
 router.post("/repos/create", createRepo);
 router.get("/repos", getAllRepositories);
 router.get("/repos/:id", getRepositoryById);
-router.get("/repos/repoid", getRepositoryIdByName);
+router.post("/repos/repoid", getRepositoryIdByName);
 router.put("/repos/:id", updateRepositoryById);
 router.delete("/repos/:id", deleteRepositoryById);
 

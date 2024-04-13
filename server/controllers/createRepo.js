@@ -61,7 +61,11 @@ async function getAllRepositories(req, res) {
 async function getRepositoryIdByName(req, res) {
   try {
     const { repositoryName } = req.body;
+    console.log("====================================");
+    console.log(repositoryName);
+    console.log("====================================");
     const repository = await Repository.findOne({ name: repositoryName });
+
     if (!repository) {
       return res.status(404).json({ error: "Repository not found" });
     }
