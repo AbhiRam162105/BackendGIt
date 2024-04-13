@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController.js");
-const issueController = require("../controllers/issueController.js");
 const login = require("../controllers/Login.js");
 const {
   createRepo,
@@ -16,6 +15,10 @@ const {
   fetchRepositoriesOfLoggedInUser,
 } = require("../controllers/Dashboard.js");
 const { googleLogin, googleSignup } = require("../controllers/googleLogin.js");
+const {
+  createIssue,
+  updateIssue,
+} = require("../controllers/issueControllers.js");
 
 // Check for authentication status
 router.get("/", (req, res) => {
@@ -50,10 +53,7 @@ router.get("/user/followed-repositories", fetchRepositoriesOfFollowedUsers);
 router.get("/user/repositories", fetchRepositoriesOfLoggedInUser); // Changed from "/user/user-repositories" to "/user/repositories" for consistency
 
 // Issue-related routes
-router.post("/issues", issueController.createIssue);
-router.get("/issues", issueController.getAllIssues);
-router.get("/issues/:id", issueController.getIssueById);
-router.put("/issues/:id", issueController.updateIssueById);
-router.delete("/issues/:id", issueController.deleteIssueById);
+router.post("/repo/issue/:id", createIssue);
+router.put("/repo/issue/:id", updateIssue);
 
 module.exports = router;
