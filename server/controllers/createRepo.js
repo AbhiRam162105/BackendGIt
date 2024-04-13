@@ -58,6 +58,18 @@ async function getAllRepositories(req, res) {
     res.status(500).json({ error: "Failed to fetch repositories" });
   }
 }
+async function getRepositoryIdByName(req, res) {
+  try {
+    const { repositoryName } = req.body;
+    const repository = await Repository.findOne({ name: repositoryName });
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found" });
+    }
+    res.json(repository._id);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch repository" });
+  }
+}
 
 async function getRepositoryById(req, res) {
   try {
@@ -108,4 +120,5 @@ module.exports = {
   getRepositoryById,
   updateRepositoryById,
   deleteRepositoryById,
+  getRepositoryIdByName,
 };
