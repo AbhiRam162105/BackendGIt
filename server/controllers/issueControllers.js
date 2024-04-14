@@ -21,11 +21,27 @@ async function createIssue(req, res) {
   }
 }
 
+async function fetchIssueById(req, res) {
+  try {
+    const { issueId } = req.params;
+
+    const issue = await Issue.findById(issueId);
+
+    if (!issue) {
+      return res.status(404).json({ error: "Issue not found" });
+    }
+
+    res.status(200).json(issue);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch issue" });
+  }
+}
+
 async function updateIssue(req, res) {
   try {
     const { title, description, status } = req.body;
 
-    // Find the issue by its title
     const issue = await Issue.findOne({ title });
     console.log(issue);
     if (!issue) {
@@ -46,6 +62,7 @@ async function updateIssue(req, res) {
 }
 
 module.exports = {
+  fetchIssueById,
   createIssue,
   updateIssue,
 };
