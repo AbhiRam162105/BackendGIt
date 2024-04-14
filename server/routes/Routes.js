@@ -19,6 +19,7 @@ const {
   createIssue,
   updateIssue,
   fetchIssueById,
+  fetchAllIssues,
 } = require("../controllers/issueControllers.js");
 
 // Check for authentication status
@@ -54,6 +55,7 @@ router.get("/user/followed-repositories", fetchRepositoriesOfFollowedUsers);
 router.get("/user/repositories", fetchRepositoriesOfLoggedInUser); // Changed from "/user/user-repositories" to "/user/repositories" for consistency
 
 // Issue-related routes
+router.get("/repo/issue", fetchAllIssues);
 router.get("/repo/issue/:id", fetchIssueById);
 router.post("/repo/issue/:id", createIssue);
 router.put("/repo/issue/:id", updateIssue);

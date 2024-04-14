@@ -42,6 +42,17 @@ async function fetchIssueById(req, res) {
   }
 }
 
+async function fetchAllIssues(req, res) {
+  try {
+    const issues = await Issue.find();
+
+    res.status(200).json(issues);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch issues" });
+  }
+}
+
 async function updateIssue(req, res) {
   try {
     const { title, description, status } = req.body;
@@ -66,6 +77,7 @@ async function updateIssue(req, res) {
 }
 
 module.exports = {
+  fetchAllIssues,
   fetchIssueById,
   createIssue,
   updateIssue,
