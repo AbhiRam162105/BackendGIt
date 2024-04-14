@@ -5,11 +5,14 @@ const authMiddleware = require("./middleware/authMiddleware.js");
 const routes = require("./routes/Routes.js");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
 
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI; // Ensure you have this in your .env file

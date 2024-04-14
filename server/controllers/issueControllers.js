@@ -23,14 +23,18 @@ async function createIssue(req, res) {
 
 async function fetchIssueById(req, res) {
   try {
-    const { issueId } = req.params;
-
-    const issue = await Issue.findById(issueId);
+    const { id } = req.params;
+    console.log("====================================");
+    console.log("id", id);
+    console.log("====================================");
+    const issue = await Issue.findById(id);
 
     if (!issue) {
       return res.status(404).json({ error: "Issue not found" });
     }
-
+    console.log("====================================");
+    console.log(issue);
+    console.log("====================================");
     res.status(200).json(issue);
   } catch (error) {
     console.error(error);
