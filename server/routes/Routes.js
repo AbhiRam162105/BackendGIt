@@ -21,6 +21,8 @@ const {
   fetchIssueById,
   fetchAllIssues,
 } = require("../controllers/issueControllers.js");
+const upload = require("../controllers/multerConfig.js");
+const { uploadFile } = require("../controllers/fileUploadController.js");
 
 // Check for authentication status
 router.get("/", (req, res) => {
@@ -59,5 +61,8 @@ router.get("/repo/issues/:id", fetchAllIssues);
 router.get("/repo/issue/:id", fetchIssueById);
 router.post("/repo/issue/:id", createIssue);
 router.put("/repo/issue/:id", updateIssue);
+
+// AWS routes
+router.post("/repo/file", upload.single("file"), uploadFile);
 
 module.exports = router;
