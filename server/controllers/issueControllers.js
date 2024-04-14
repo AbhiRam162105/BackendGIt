@@ -44,8 +44,8 @@ async function fetchIssueById(req, res) {
 
 async function fetchAllIssues(req, res) {
   try {
-    const issues = await Issue.find();
-
+    const { id } = req.params;
+    const issues = await Issue.find({ repository: id });
     res.status(200).json(issues);
   } catch (error) {
     console.error(error);
