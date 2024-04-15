@@ -109,6 +109,10 @@ async function updateRepositoryById(req, res) {
 async function updateRepositoryFileById(req, res) {
   try {
     const { content } = req.body;
+    console.log("====================================");
+    console.log(content);
+    console.log("====================================");
+    console.log(req.params.id);
     const repository = await Repository.findById(req.params.id);
 
     if (!repository) {
@@ -138,6 +142,18 @@ async function deleteRepositoryById(req, res) {
   }
 }
 
+async function getRepositoryContent(req, res) {
+  try {
+    const repository = await Repository.findById(req.params.id);
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found" });
+    }
+    res.json({ content: repository.content });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch repository content" });
+  }
+}
+
 module.exports = {
   createRepo,
   getAllRepositories,
@@ -146,4 +162,5 @@ module.exports = {
   updateRepositoryById,
   deleteRepositoryById,
   getRepositoryIdByName,
+  getRepositoryContent,
 };

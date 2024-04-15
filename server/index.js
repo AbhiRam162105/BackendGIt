@@ -13,7 +13,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
-
+app.use(express.json());
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI; // Ensure you have this in your .env file
 mongoose
@@ -29,7 +29,7 @@ const config = {
   clientID: process.env.CLIENT_ID,
   issuerBaseURL: "https://dev-z8tivme55voqva1b.us.auth0.com",
 };
-app.use(express.json());
+
 app.use(cors({ origin: "*" }));
 
 app.use("/", routes);
