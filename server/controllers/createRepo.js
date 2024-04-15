@@ -106,6 +106,26 @@ async function updateRepositoryById(req, res) {
   }
 }
 
+async function updateRepositoryFileById(req, res) {
+  try {
+    const { content } = req.body;
+    const repository = await Repository.findById(req.params.id);
+
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found" });
+    }
+    repository.content.push(content);
+    const updatedRepository = await repository.save();
+
+    res.json({
+      message: "Repository updated successfully",
+      repository: updatedRepository,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update repository" });
+  }
+}
+
 async function deleteRepositoryById(req, res) {
   try {
     const repository = await Repository.findByIdAndDelete(req.params.id);
@@ -122,6 +142,7 @@ module.exports = {
   createRepo,
   getAllRepositories,
   getRepositoryById,
+  updateRepositoryFileById,
   updateRepositoryById,
   deleteRepositoryById,
   getRepositoryIdByName,

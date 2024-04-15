@@ -9,6 +9,7 @@ const {
   updateRepositoryById,
   deleteRepositoryById,
   getRepositoryIdByName,
+  updateRepositoryFileById,
 } = require("../controllers/createRepo.js");
 const {
   fetchRepositoriesOfFollowedUsers,
@@ -51,6 +52,7 @@ router.get("/repos/:id", getRepositoryById);
 router.post("/repos/repoid", getRepositoryIdByName);
 router.put("/repos/:id", updateRepositoryById);
 router.delete("/repos/:id", deleteRepositoryById);
+router.post("/repos/filechange/:id", updateRepositoryFileById);
 
 // Dashboard routes
 router.get("/user/followed-repositories", fetchRepositoriesOfFollowedUsers);
