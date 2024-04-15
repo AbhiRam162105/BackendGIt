@@ -55,7 +55,7 @@ async function fetchAllIssues(req, res) {
 
 async function fetchAllUserIssues(req, res) {
   try {
-    const issues = await Issue.find({ owner: "6617042d19a58e34628738ad" });
+    const issues = await Issue.find({ owner: "6606cb2f0705c0e5296f18f8" });
 
     res.status(200).json(issues);
   } catch (error) {
