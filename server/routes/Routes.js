@@ -22,6 +22,7 @@ const {
   updateIssue,
   fetchIssueById,
   fetchAllIssues,
+  fetchAllUserIssues,
 } = require("../controllers/issueControllers.js");
 const upload = require("../controllers/multerConfig.js");
 const { uploadFile } = require("../controllers/fileUploadController.js");
@@ -61,6 +62,7 @@ router.get("/user/followed-repositories", fetchRepositoriesOfFollowedUsers);
 router.get("/user/repositories", fetchRepositoriesOfLoggedInUser);
 
 // Issue-related routes
+router.get("/repo/issues", fetchAllUserIssues);
 router.get("/repo/issues/:id", fetchAllIssues);
 router.get("/repo/issue/:id", fetchIssueById);
 router.post("/repo/issue/:id", createIssue);

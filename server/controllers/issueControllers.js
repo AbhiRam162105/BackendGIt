@@ -53,6 +53,17 @@ async function fetchAllIssues(req, res) {
   }
 }
 
+async function fetchAllUserIssues(req, res) {
+  try {
+    const issues = await Issue.find({ owner: "6617042d19a58e34628738ad" });
+
+    res.status(200).json(issues);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch user issues" });
+  }
+}
+
 async function updateIssue(req, res) {
   try {
     const { title, description, status } = req.body;
@@ -77,6 +88,7 @@ async function updateIssue(req, res) {
 }
 
 module.exports = {
+  fetchAllUserIssues,
   fetchAllIssues,
   fetchIssueById,
   createIssue,
