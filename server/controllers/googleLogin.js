@@ -10,7 +10,7 @@ const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 
 async function googleLogin(req, res) {
-  const { code } = req.body;
+  const { googleId } = req.body;
 
   try {
     await client.connect();
@@ -18,7 +18,7 @@ async function googleLogin(req, res) {
     const db = client.db("test");
     const usersCollection = db.collection("users");
 
-    let user = await usersCollection.findOne({ googleId: code });
+    let user = await usersCollection.findOne({ googleId: googleId });
 
     if (!user) {
       throw error("User does not exist");
