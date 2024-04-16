@@ -16,6 +16,7 @@ const {
   searchRepositoriesByName,
   userRepo,
   getAllRepositoriesbyId,
+  deleteRepositoryFileById,
 } = require("../controllers/createRepo.js");
 const {
   fetchRepositoriesOfFollowedUsers,
@@ -64,6 +65,7 @@ router.post("/repos/repoid", getRepositoryIdByName);
 router.put("/repos/:id", updateRepositoryById);
 router.delete("/repos/:id", deleteRepositoryById);
 router.post("/repos/filechange/:id", updateRepositoryFileById);
+router.delete("/repos/filechange/:id", deleteRepositoryFileById);
 router.get("/repos/content/:id", getRepositoryContent);
 router.get("/repos/toggleVisibility/:id", toggleRepositoryVisibility);
 router.post("/repos/renameRepository/:id", renameRepositoryById);

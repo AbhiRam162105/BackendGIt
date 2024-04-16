@@ -143,6 +143,29 @@ async function updateRepositoryFileById(req, res) {
   }
 }
 
+async function deleteRepositoryFileById(req, res) {
+  try {
+    const { id } = req.params;
+    console.log("====================================");
+    console.log(`Deleting repository with ID: ${id}`);
+    console.log("====================================");
+
+    const repository = await Repository.findById(id);
+
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found" });
+    }
+
+    await repository.remove();
+
+    res.json({
+      message: "Repository deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete repository" });
+  }
+}
+
 async function deleteRepositoryById(req, res) {
   try {
     const repository = await Repository.findByIdAndDelete(req.params.id);
@@ -267,5 +290,6 @@ module.exports = {
   toggleRepositoryVisibility,
   renameRepositoryById,
   searchRepositoriesByName,
+  deleteRepositoryFileById,
   userRepo,
 };
