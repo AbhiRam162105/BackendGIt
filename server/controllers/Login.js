@@ -31,7 +31,7 @@ async function signup(req, res) {
       username,
       password: hashedPassword,
       email, // Include email in the new user document
-      googleId, // Include googleId in the new user document
+      googleId: googleId || "", // Include googleId in the new user document
       repositories: [], // Initialize repositories array
       followedUsers: [], // Initialize followedUsers array
       starRepos: [], // Initialize starRepos array

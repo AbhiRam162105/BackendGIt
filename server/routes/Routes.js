@@ -13,6 +13,8 @@ const {
   getRepositoryContent,
   toggleRepositoryVisibility,
   renameRepositoryById,
+  searchRepositoriesByName,
+  userRepo,
 } = require("../controllers/createRepo.js");
 const {
   fetchRepositoriesOfFollowedUsers,
@@ -57,7 +59,8 @@ router.delete("/users/:id", userController.deleteUserById);
 // Repository-related routes
 router.post("/repos/create", createRepo);
 router.get("/repos", getAllRepositories);
-router.get("/repos/:id", getRepositoryById);
+// router.get("/repos/:id", getRepositoryById);
+router.get("/repos/getRepositoryById/:id", getRepositoryById);
 router.post("/repos/repoid", getRepositoryIdByName);
 router.put("/repos/:id", updateRepositoryById);
 router.delete("/repos/:id", deleteRepositoryById);
@@ -65,6 +68,8 @@ router.post("/repos/filechange/:id", updateRepositoryFileById);
 router.get("/repos/content/:id", getRepositoryContent);
 router.get("/repos/toggleVisibility/:id", toggleRepositoryVisibility);
 router.post("/repos/renameRepository/:id", renameRepositoryById);
+router.get("/repos/searchRepositoriesByName", searchRepositoriesByName);
+router.get("/repos/userRepo", userRepo);
 
 // Dashboard routes
 router.get("/user/followed-repositories", fetchRepositoriesOfFollowedUsers);

@@ -72,7 +72,7 @@ async function getRepositoryIdByName(req, res) {
     }
     res.json(repository._id);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch repository" });
+    res.status(500).json({ error: "Failed to fetch repository name by id" });
   }
 }
 
@@ -86,7 +86,7 @@ async function getRepositoryById(req, res) {
     }
     res.json(repository);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch repository" });
+    res.status(500).json({ error: "Failed to fetch repository by id" });
   }
 }
 
@@ -202,6 +202,43 @@ async function renameRepositoryById(req, res) {
   }
 }
 
+async function searchRepositoriesByName(req, res) {
+  try {
+
+    const { searchTerm } = req.body;
+    // Check if searchTerm is provided
+    if (!searchTerm) {
+      return res.status(400).json({ error: "Search term is required" });
+    }
+
+    // Perform case-insensitive search using regular expression
+    const regex = new RegExp(searchTerm, "i");
+    const repositories = await Repository.find({ name: regex });
+
+    res.json({ message: "Repository found successfully", repositories });
+  } catch (error) {
+    console.log("Error searching repositories by name:");
+    res.status(500).json({ error: "Failed to search repositories by name" });
+  }
+}
+
+async function userRepo(req, res) {
+  try {
+
+    const userId = req.user;
+    console.log(userId)
+
+    const repositories = await Repository.find({ owner: userId });
+    if (!repositories) {
+      return res.status(404).json({ error: "User repo not found" });
+    }
+    res.json({ message: "User repos fetched sucessfully", repositories });
+  } catch (error) {
+    console.error("Error fetching repositories by logged-in user:", error);
+    res.status(500).json({ error: "Failed to fetch repositories" });
+  }
+}
+
 
 
 
@@ -216,4 +253,6 @@ module.exports = {
   getRepositoryContent,
   toggleRepositoryVisibility,
   renameRepositoryById,
+  searchRepositoriesByName,
+  userRepo
 };
