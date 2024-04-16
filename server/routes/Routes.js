@@ -74,7 +74,7 @@ router.get("/user/repositories", fetchRepositoriesOfLoggedInUser);
 
 // Issue-related routes
 router.get("/repo/issues", fetchAllUserIssues);
-router.get("/repo/issues/:UserId", fetchAllIssuesByUserId);
+router.get("/repo/issues/user/:UserId", fetchAllIssuesByUserId);
 router.get("/repo/issues/:id", fetchAllIssues);
 router.get("/repo/issue/:id", fetchIssueById);
 router.post("/repo/issue/:id", createIssue);
