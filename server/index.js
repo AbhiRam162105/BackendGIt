@@ -50,8 +50,10 @@ const io = new Server(httpServer, {
 
 const db = mongoose.connection;
 
-db.once("open", () => {
+db.once("open", async () => {
   console.log("Connected to MongoDB");
+  const issuesInitial = await Issue.find({});
+  io.emit("Connected", issuesInitial);
   const changeStream = Issue.watch();
   changeStream.on("change", async (change) => {
     console.log("Change detected:", change);
