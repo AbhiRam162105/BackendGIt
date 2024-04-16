@@ -24,9 +24,9 @@ async function createIssue(req, res) {
 
 async function fetchAllIssuesByUserId(req, res) {
   try {
-    const { id } = req.params;
-    console.log("User ID:", id);
-    const repositories = await Repository.find({ owner: id });
+    const { UserId } = req.params;
+    console.log("User ID:", UserId);
+    const repositories = await Repository.find({ owner: UserId });
     const repositoryIds = repositories.map((repo) => repo._id);
     console.log("Repository IDs:", repositoryIds);
     const issues = await Issue.find({ repository: { $in: repositoryIds } });
@@ -126,5 +126,5 @@ module.exports = {
   fetchIssueById,
   createIssue,
   updateIssue,
-  deleteIssueById
+  deleteIssueById,
 };

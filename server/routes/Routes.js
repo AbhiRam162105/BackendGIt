@@ -33,19 +33,16 @@ const {
 const upload = require("../controllers/multerConfig.js");
 const { uploadFile } = require("../controllers/fileUploadController.js");
 
-
 // Check for authentication status
 router.get("/", (req, res) => {
   res.send("Welcome");
 });
-
 
 // Auth routes
 router.post("/login", login.login);
 router.post("/signup", login.signup);
 router.post("/oauth/google", googleLogin);
 router.post("/oauth/google/signup", googleSignup);
-
 
 // User-related routes
 router.get("/userinfo", userController.getAllUsers);
@@ -55,7 +52,6 @@ router.get("/users", userController.getAllUsers);
 router.get("/users/:id", userController.getUserById);
 router.put("/users/:id", userController.updateUserById);
 router.delete("/users/:id", userController.deleteUserById);
-
 
 // Repository-related routes
 router.post("/repos/create", createRepo);
@@ -78,7 +74,7 @@ router.get("/user/repositories", fetchRepositoriesOfLoggedInUser);
 
 // Issue-related routes
 router.get("/repo/issues", fetchAllUserIssues);
-router.get("/repo/issues/:id", fetchAllIssuesByUserId);
+router.get("/repo/issues/:UserId", fetchAllIssuesByUserId);
 router.get("/repo/issues/:id", fetchAllIssues);
 router.get("/repo/issue/:id", fetchIssueById);
 router.post("/repo/issue/:id", createIssue);
