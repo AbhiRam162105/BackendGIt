@@ -73,11 +73,12 @@ db.once("open", async () => {
     console.log("====================================");
 
     const repositories = await Repository.find({
-      owner: user.toString(),
+      owner: user,
     });
 
-    const issueIds = repositories.flatMap((repo) => repo.issues);
-    const issues = await Issue.find({ _id: { $in: issueIds } });
+    const repositoryIds = repositories.map((repo) => repo._id);
+
+    const issues = await Issue.find({ repository: { $in: repositoryIds } });
 
     console.log("====================================");
     console.log(user);
