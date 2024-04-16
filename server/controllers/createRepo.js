@@ -58,6 +58,7 @@ async function getAllRepositories(req, res) {
     res.status(500).json({ error: "Failed to fetch repositories" });
   }
 }
+
 async function getRepositoryIdByName(req, res) {
   try {
     const { repositoryName } = req.body;
@@ -71,7 +72,7 @@ async function getRepositoryIdByName(req, res) {
     }
     res.json(repository._id);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch repository" });
+    res.status(500).json({ error: "Failed to fetch repository name by id" });
   }
 }
 
@@ -85,7 +86,7 @@ async function getRepositoryById(req, res) {
     }
     res.json(repository);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch repository" });
+    res.status(500).json({ error: "Failed to fetch repository by id" });
   }
 }
 
@@ -154,6 +155,93 @@ async function getRepositoryContent(req, res) {
   }
 }
 
+async function toggleRepositoryVisibility(req, res) {
+  try {
+    const repositoryId = req.params.id;
+    const repository = await Repository.findById(repositoryId);
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found" });
+    }
+    repository.visibility = !repository.visibility;
+
+    await repository.save();
+
+    res.json({ message: "Repository visibility updated successfully", visibility: repository.visibility });
+  } catch (error) {
+    console.error("Error toggling repository visibility:", error);
+    res.status(500).json({ error: "Failed to toggle repository visibility" });
+  }
+}
+
+
+async function renameRepositoryById(req, res) {
+  try {
+    const repositoryId = req.params.id;
+    const { newTitle } = req.body;
+
+    // Check if newTitle is provided
+    if (!newTitle) {
+      return res.status(400).json({ error: "New title is required" });
+    }
+
+    const repository = await Repository.findById(repositoryId);
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found" });
+    }
+
+    // Update the repository title
+    repository.name = newTitle;
+
+    // Save the updated repository
+    const updatedRepository = await repository.save();
+
+    res.json({ message: "Repository title updated successfully", repository: updatedRepository });
+  } catch (error) {
+    console.error("Error renaming repository:", error);
+    res.status(500).json({ error: "Failed to rename repository" });
+  }
+}
+
+async function searchRepositoriesByName(req, res) {
+  try {
+
+    const { searchTerm } = req.body;
+    // Check if searchTerm is provided
+    if (!searchTerm) {
+      return res.status(400).json({ error: "Search term is required" });
+    }
+
+    // Perform case-insensitive search using regular expression
+    const regex = new RegExp(searchTerm, "i");
+    const repositories = await Repository.find({ name: regex });
+
+    res.json({ message: "Repository found successfully", repositories });
+  } catch (error) {
+    console.log("Error searching repositories by name:");
+    res.status(500).json({ error: "Failed to search repositories by name" });
+  }
+}
+
+async function userRepo(req, res) {
+  try {
+
+    const userId = req.user;
+    console.log(userId)
+
+    const repositories = await Repository.find({ owner: userId });
+    if (!repositories) {
+      return res.status(404).json({ error: "User repo not found" });
+    }
+    res.json({ message: "User repos fetched sucessfully", repositories });
+  } catch (error) {
+    console.error("Error fetching repositories by logged-in user:", error);
+    res.status(500).json({ error: "Failed to fetch repositories" });
+  }
+}
+
+
+
+
 module.exports = {
   createRepo,
   getAllRepositories,
@@ -163,4 +251,8 @@ module.exports = {
   deleteRepositoryById,
   getRepositoryIdByName,
   getRepositoryContent,
+  toggleRepositoryVisibility,
+  renameRepositoryById,
+  searchRepositoriesByName,
+  userRepo
 };

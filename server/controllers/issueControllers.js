@@ -75,7 +75,6 @@ async function fetchAllIssues(req, res) {
 async function fetchAllUserIssues(req, res) {
   try {
     const issues = await Issue.find();
-
     res.status(200).json(issues);
   } catch (error) {
     console.error(error);
@@ -86,13 +85,11 @@ async function fetchAllUserIssues(req, res) {
 async function updateIssue(req, res) {
   try {
     const { title, description, status } = req.body;
-
     const issue = await Issue.findOne({ title });
     console.log(issue);
     if (!issue) {
       return res.status(404).json({ error: "Issue not found" });
     }
-
     if (description) issue.description = description;
     if (status) issue.status = status;
 
@@ -106,6 +103,22 @@ async function updateIssue(req, res) {
   }
 }
 
+async function deleteIssueById(req, res) {
+  try {
+    const { id } = req.params;
+    const issue = await Issue.findById(id);
+    console.log(issue);
+    if (!issue) {
+      return res.status(404).json({ error: "Issue not found" });
+    }
+    await Issue.findByIdAndDelete(id);
+    res.status(200).json({ message: "Issue deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete issue" });
+  }
+}
+
 module.exports = {
   fetchAllIssuesByUserId,
   fetchAllUserIssues,
@@ -113,4 +126,5 @@ module.exports = {
   fetchIssueById,
   createIssue,
   updateIssue,
+  deleteIssueById
 };
