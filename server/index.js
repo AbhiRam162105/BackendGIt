@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const Issue = require("./models/issues.js");
 const http = require("http");
 const { Server } = require("socket.io");
+const { fetchAllUserIssues } = require("./controllers/issueControllers.js");
 
 dotenv.config();
 
@@ -17,8 +18,9 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(express.json());
-// MongoDB connection
-const mongoURI = process.env.MONGO_URI; // Ensure you have this in your .env file
+
+const mongoURI = process.env.MONGO_URI;
+
 mongoose
   .connect(mongoURI)
   .then(() => console.log("MongoDB connected successfully"))
@@ -37,14 +39,11 @@ app.use(cors({ origin: "*" }));
 
 app.use("/", routes);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-
 const httpServer = http.createServer(app);
+
 const io = new Server(httpServer, {
   cors: {
-    origin: "*", // This allows all origins
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -53,14 +52,19 @@ const db = mongoose.connection;
 
 db.once("open", () => {
   console.log("Connected to MongoDB");
-
   const changeStream = Issue.watch();
-
-  changeStream.on("change", (change) => {
+  changeStream.on("change", async (change) => {
     console.log("Change detected:", change);
     console.log("====================================");
     console.log(change.fullDocument._id.toString());
     console.log("====================================");
-    io.emit("issueUpdate", change.fullDocument);
+    // Fetch all issues from the database
+    const issues = await Issue.find({});
+    // Emit the fetched issues to all connected clients
+    io.emit("issueUpdate", issues);
   });
+});
+
+httpServer.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
