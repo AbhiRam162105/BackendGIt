@@ -11,6 +11,8 @@ const {
   getRepositoryIdByName,
   updateRepositoryFileById,
   getRepositoryContent,
+  toggleRepositoryVisibility,
+  renameRepositoryById,
 } = require("../controllers/createRepo.js");
 const {
   fetchRepositoriesOfFollowedUsers,
@@ -23,20 +25,24 @@ const {
   fetchIssueById,
   fetchAllIssues,
   fetchAllUserIssues,
+  deleteIssueById,
 } = require("../controllers/issueControllers.js");
 const upload = require("../controllers/multerConfig.js");
 const { uploadFile } = require("../controllers/fileUploadController.js");
+
 
 // Check for authentication status
 router.get("/", (req, res) => {
   res.send("Welcome");
 });
 
+
 // Auth routes
 router.post("/login", login.login);
 router.post("/signup", login.signup);
 router.post("/oauth/google", googleLogin);
 router.post("/oauth/google/signup", googleSignup);
+
 
 // User-related routes
 router.get("/userinfo", userController.getAllUsers);
@@ -47,6 +53,7 @@ router.get("/users/:id", userController.getUserById);
 router.put("/users/:id", userController.updateUserById);
 router.delete("/users/:id", userController.deleteUserById);
 
+
 // Repository-related routes
 router.post("/repos/create", createRepo);
 router.get("/repos", getAllRepositories);
@@ -56,6 +63,8 @@ router.put("/repos/:id", updateRepositoryById);
 router.delete("/repos/:id", deleteRepositoryById);
 router.post("/repos/filechange/:id", updateRepositoryFileById);
 router.get("/repos/content/:id", getRepositoryContent);
+router.get("/repos/toggleVisibility/:id", toggleRepositoryVisibility);
+router.post("/repos/renameRepository/:id", renameRepositoryById);
 
 // Dashboard routes
 router.get("/user/followed-repositories", fetchRepositoriesOfFollowedUsers);
@@ -67,6 +76,7 @@ router.get("/repo/issues/:id", fetchAllIssues);
 router.get("/repo/issue/:id", fetchIssueById);
 router.post("/repo/issue/:id", createIssue);
 router.put("/repo/issue/:id", updateIssue);
+router.delete("/repo/issue/deleteIssue/:id", deleteIssueById);
 
 // AWS routes
 router.post("/repo/file", upload.single("file"), uploadFile);
