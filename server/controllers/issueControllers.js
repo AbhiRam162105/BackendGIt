@@ -24,27 +24,18 @@ async function createIssue(req, res) {
 
 async function fetchAllIssuesByUserId(req, res) {
   try {
-    const { userId } = req.params;
-    console.log("====================================");
-    console.log("userId", userId);
-    console.log("====================================");
+    const { id } = req.params;
+    console.log("User ID:", id);
+    const repositories = await Repository.find({ owner: id });
+    const repositoryIds = repositories.map((repo) => repo._id);
+    console.log("Repository IDs:", repositoryIds);
+    const issues = await Issue.find({ repository: { $in: repositoryIds } });
 
-    const repositories = await Repository.find({
-      owner: mongoose.Types.ObjectId(userId),
-    });
-
-    // Step 2: For each repository, find all issues associated with it
-    const issueIds = repositories.flatMap((repo) => repo.issues);
-    const issues = await Issue.find({ _id: { $in: issueIds } });
-
-    // Step 3: Combine all issues into a single array
-    console.log("====================================");
-    console.log(issues);
-    console.log("====================================");
+    console.log("Fetched Issues:", issues);
 
     res.status(200).json(issues);
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching issues:", error);
     res.status(500).json({ error: "Failed to fetch issues" });
   }
 }
