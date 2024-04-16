@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const Issue = require("../models/issues.js");
+const Repository = require("../models/repoModel.js");
 
 async function createIssue(req, res) {
   try {
     const { title, description } = req.body;
-    const { id } = req.params; // Simplified for demonstration
+    const { id } = req.params;
 
     const issue = new Issue({
       title,
@@ -18,6 +19,33 @@ async function createIssue(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to create issue" });
+  }
+}
+
+async function fetchAllIssuesByUserId(req, res) {
+  try {
+    const { userId } = req.params;
+    console.log("====================================");
+    console.log("userId", userId);
+    console.log("====================================");
+
+    const repositories = await Repository.find({
+      owner: mongoose.Types.ObjectId(userId),
+    });
+
+    // Step 2: For each repository, find all issues associated with it
+    const issueIds = repositories.flatMap((repo) => repo.issues);
+    const issues = await Issue.find({ _id: { $in: issueIds } });
+
+    // Step 3: Combine all issues into a single array
+    console.log("====================================");
+    console.log(issues);
+    console.log("====================================");
+
+    res.status(200).json(issues);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch issues" });
   }
 }
 
@@ -88,6 +116,7 @@ async function updateIssue(req, res) {
 }
 
 module.exports = {
+  fetchAllIssuesByUserId,
   fetchAllUserIssues,
   fetchAllIssues,
   fetchIssueById,

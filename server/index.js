@@ -7,9 +7,9 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const Issue = require("./models/issues.js");
+const Repository = require("./models/repoModel.js"); // Ensure this path is correct
 const http = require("http");
 const { Server } = require("socket.io");
-const { fetchAllUserIssues } = require("./controllers/issueControllers.js");
 
 dotenv.config();
 
@@ -22,22 +22,9 @@ app.use(express.json());
 const mongoURI = process.env.MONGO_URI;
 
 mongoose
-  .connect(mongoURI)
+  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
-
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  secret: process.env.SECRET,
-  baseURL: "http://localhost:3000",
-  clientID: process.env.CLIENT_ID,
-  issuerBaseURL: "https://dev-z8tivme55voqva1b.us.auth0.com",
-};
-
-app.use(cors({ origin: "*" }));
-
-app.use("/", routes);
 
 const httpServer = http.createServer(app);
 
@@ -48,24 +35,34 @@ const io = new Server(httpServer, {
   },
 });
 
-const db = mongoose.connection;
+io.on("connection", (socket) => {
+  console.log("A user connected");
 
-db.once("open", async () => {
-  console.log("Connected to MongoDB");
-  const issuesInitial = await Issue.find({});
-  io.emit("Connected", issuesInitial);
-  const changeStream = Issue.watch();
-  changeStream.on("change", async (change) => {
-    console.log("Change detected:", change);
-    console.log("====================================");
-    console.log(change.fullDocument._id.toString());
-    console.log("====================================");
-    // Fetch all issues from the database
-    const issues = await Issue.find({});
-    // Emit the fetched issues to all connected clients
-    io.emit("issueUpdate", issues);
+  const userID = socket.handshake.query.userID;
+
+  socket.on("fetchIssues", async () => {
+    const issues = await fetchIssuesForUser(userID);
+    socket.emit("issueUpdate", issues);
+  });
+
+  socket.on("issueUpdate", async () => {
+    const issues = await fetchIssuesForUser(userID);
+    socket.emit("issueUpdate", issues);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
   });
 });
+
+async function fetchIssuesForUser(userID) {
+  const repositories = await Repository.find({
+    owner: mongoose.Types.ObjectId(userID),
+  });
+  const issueIds = repositories.flatMap((repo) => repo.issues);
+  const issues = await Issue.find({ _id: { $in: issueIds } });
+  return issues;
+}
 
 httpServer.listen(port, () => {
   console.log(`Server is running on port ${port}`);
