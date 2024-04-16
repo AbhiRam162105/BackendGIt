@@ -15,3 +15,19 @@ exports.uploadFile = async (req, res) => {
     res.status(500).send("Failed to upload file.");
   }
 };
+
+exports.deleteFileFromS3 = async (bucketName, fileKey) => {
+  try {
+    const params = {
+      Bucket: bucketName,
+      Key: fileKey,
+    };
+
+    await s3.deleteObject(params).promise();
+    console.log(`File ${fileKey} deleted from ${bucketName}`);
+    return true;
+  } catch (error) {
+    console.error(`Failed to delete file ${fileKey} from ${bucketName}`, error);
+    return false;
+  }
+};
