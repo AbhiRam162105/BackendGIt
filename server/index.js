@@ -84,7 +84,7 @@ db.once("open", async () => {
 
     console.log("====================================");
 
-    io.to(user).emit("issueUpdate", issues);
+    io.emit("issueUpdate", issues);
   });
 });
 
