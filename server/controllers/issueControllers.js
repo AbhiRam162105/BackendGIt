@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const Issue = require("../models/issues.js");
+const Repository = require("../models/repoModel.js");
 
 async function createIssue(req, res) {
   try {
     const { title, description } = req.body;
-    const { id } = req.params; // Simplified for demonstration
+    const { id } = req.params;
 
     const issue = new Issue({
       title,
@@ -18,6 +19,24 @@ async function createIssue(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to create issue" });
+  }
+}
+
+async function fetchAllIssuesByUserId(req, res) {
+  try {
+    const { id } = req.params;
+    console.log("User ID:", id);
+    const repositories = await Repository.find({ owner: id });
+    const repositoryIds = repositories.map((repo) => repo._id);
+    console.log("Repository IDs:", repositoryIds);
+    const issues = await Issue.find({ repository: { $in: repositoryIds } });
+
+    console.log("Fetched Issues:", issues);
+
+    res.status(200).json(issues);
+  } catch (error) {
+    console.error("Error fetching issues:", error);
+    res.status(500).json({ error: "Failed to fetch issues" });
   }
 }
 
@@ -101,6 +120,7 @@ async function deleteIssueById(req, res) {
 }
 
 module.exports = {
+  fetchAllIssuesByUserId,
   fetchAllUserIssues,
   fetchAllIssues,
   fetchIssueById,
