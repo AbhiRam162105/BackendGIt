@@ -15,6 +15,7 @@ const {
   renameRepositoryById,
   searchRepositoriesByName,
   userRepo,
+  getAllRepositoriesbyId,
 } = require("../controllers/createRepo.js");
 const {
   fetchRepositoriesOfFollowedUsers,
@@ -56,6 +57,7 @@ router.delete("/users/:id", userController.deleteUserById);
 // Repository-related routes
 router.post("/repos/create", createRepo);
 router.get("/repos", getAllRepositories);
+router.get("/repos/getAll/:id", getAllRepositoriesbyId);
 // router.get("/repos/:id", getRepositoryById);
 router.get("/repos/getRepositoryById/:id", getRepositoryById);
 router.post("/repos/repoid", getRepositoryIdByName);

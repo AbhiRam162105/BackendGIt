@@ -59,6 +59,18 @@ async function getAllRepositories(req, res) {
   }
 }
 
+async function getAllRepositoriesbyId(req, res) {
+  try {
+    const { id } = req.params;
+    const repositories = await Repository.find({ owner: id })
+      .populate("owner")
+      .populate("issues");
+    res.json(repositories);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch repositories" });
+  }
+}
+
 async function getRepositoryIdByName(req, res) {
   try {
     const { repositoryName } = req.body;
@@ -166,13 +178,15 @@ async function toggleRepositoryVisibility(req, res) {
 
     await repository.save();
 
-    res.json({ message: "Repository visibility updated successfully", visibility: repository.visibility });
+    res.json({
+      message: "Repository visibility updated successfully",
+      visibility: repository.visibility,
+    });
   } catch (error) {
     console.error("Error toggling repository visibility:", error);
     res.status(500).json({ error: "Failed to toggle repository visibility" });
   }
 }
-
 
 async function renameRepositoryById(req, res) {
   try {
@@ -195,7 +209,10 @@ async function renameRepositoryById(req, res) {
     // Save the updated repository
     const updatedRepository = await repository.save();
 
-    res.json({ message: "Repository title updated successfully", repository: updatedRepository });
+    res.json({
+      message: "Repository title updated successfully",
+      repository: updatedRepository,
+    });
   } catch (error) {
     console.error("Error renaming repository:", error);
     res.status(500).json({ error: "Failed to rename repository" });
@@ -204,7 +221,6 @@ async function renameRepositoryById(req, res) {
 
 async function searchRepositoriesByName(req, res) {
   try {
-
     const { searchTerm } = req.body;
     // Check if searchTerm is provided
     if (!searchTerm) {
@@ -224,9 +240,8 @@ async function searchRepositoriesByName(req, res) {
 
 async function userRepo(req, res) {
   try {
-
     const userId = req.user;
-    console.log(userId)
+    console.log(userId);
 
     const repositories = await Repository.find({ owner: userId });
     if (!repositories) {
@@ -239,11 +254,9 @@ async function userRepo(req, res) {
   }
 }
 
-
-
-
 module.exports = {
   createRepo,
+  getAllRepositoriesbyId,
   getAllRepositories,
   getRepositoryById,
   updateRepositoryFileById,
@@ -254,5 +267,5 @@ module.exports = {
   toggleRepositoryVisibility,
   renameRepositoryById,
   searchRepositoriesByName,
-  userRepo
+  userRepo,
 };
