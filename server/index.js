@@ -6,6 +6,8 @@ const routes = require("./routes/Routes.js");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const Issue = require("./models/issues.js");
+const io = require("socket.io")(process.env.SOCKET_IO_PORT);
 
 dotenv.config();
 
@@ -36,4 +38,20 @@ app.use("/", routes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+const db = mongoose.connection;
+
+db.once("open", () => {
+  console.log("Connected to MongoDB");
+
+  const changeStream = Issue.watch();
+
+  changeStream.on("change", (change) => {
+    console.log("Change detected:", change);
+    console.log("====================================");
+    console.log(change.fullDocument._id.toString());
+    console.log("====================================");
+    io.emit("issueUpdate", change.fullDocument);
+  });
 });
