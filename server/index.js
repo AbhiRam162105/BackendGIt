@@ -7,7 +7,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const Issue = require("./models/issues.js");
-const io = require("socket.io")(process.env.SOCKET_IO_PORT);
+const http = require("http");
+const { Server } = require("socket.io");
 
 dotenv.config();
 
@@ -38,6 +39,14 @@ app.use("/", routes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*", // This allows all origins
+    methods: ["GET", "POST"],
+  },
 });
 
 const db = mongoose.connection;
