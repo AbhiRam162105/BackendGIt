@@ -14,8 +14,8 @@ async function createIssue(req, res) {
     });
 
     await issue.save();
-
-    res.status(201).json("error in creating issue");
+    console.log(issue);
+    res.status(201).json(issue);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to create issue" });
