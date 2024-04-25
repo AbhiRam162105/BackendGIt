@@ -147,11 +147,11 @@ async function deleteRepositoryFileById(req, res) {
   try {
     const { id } = req.params;
     console.log("====================================");
-    console.log(`Deleting repository with ID: ${id}`);
+    console.log(`Deleting file with ID: ${id}`);
     console.log("====================================");
 
     const repository = await Repository.findById(id);
-
+    console.log(repository);
     if (!repository) {
       return res.status(404).json({ error: "Repository not found" });
     }
